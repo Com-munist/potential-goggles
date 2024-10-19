@@ -9,7 +9,7 @@ COPY requirements.txt .
 #COPY constraints.txt .  # Copy constraints file if you created one
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Copy the rest of your application code
 COPY . .
