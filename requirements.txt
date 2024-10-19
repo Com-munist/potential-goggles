@@ -1,5 +1,3 @@
 discord.py
 cryptography
-pynput
 python-dotenv
-
