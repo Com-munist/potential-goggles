@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copy requirements.txt
 COPY requirements.txt .
-COPY constraints.txt .  # Copy constraints file if you created one
+#COPY constraints.txt .  # Copy constraints file if you created one
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt --constraint constraints.txt
