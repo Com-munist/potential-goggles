@@ -2,6 +2,7 @@ import discord
 import os
 from discord.ext import commands
 from dotenv import load_dotenv
+from cryptography.fernet import Fernet
 
 load_dotenv()  # Load environment variables from .env file
 
