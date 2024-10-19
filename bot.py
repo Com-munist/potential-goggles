@@ -25,7 +25,7 @@ cipher = Fernet(key)
 @bot.event
 async def on_message(message):
     """Event handler that processes messages."""
-     print(f"Received message: {message.content} from {message.author.name}")  # Debug logging
+print(f"Received message: {message.content} from {message.author.name}")  # Debug logging
     if message.channel.id == CHANNEL_ID:
         encrypted_message = message.content
         try:
