@@ -34,8 +34,8 @@ if message.channel.id == CHANNEL_ID:
         print(f"Decrypted message: {decrypted_message}")
     except Exception as e:
         print(f"Failed to decrypt message: {e}")
-        # Do not forget to process other commands/messages
-        await bot.process_commands(message)
+    # Do not forget to process other commands/messages
+    await bot.process_commands(message)
 # Run the bot
 bot.run(TOKEN)
 
