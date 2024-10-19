@@ -13,7 +13,8 @@ intents.message_content = True  # Enable privileged message content intent (requ
 
 # Discord bot setup
 TOKEN = os.getenv('DISCORD_TOKEN')  # Replace with your actual bot token
-CHANNEL_ID = int(os.getenv('DISCORD_ID'))
+SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
+DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
 key = os.getenv('DISCORD_KEY')
 
 bot = commands.Bot(command_prefix='!', intents=intents)
@@ -25,17 +26,26 @@ cipher = Fernet(key)
 @bot.event
 async def on_message(message):
     """Event handler that processes messages."""
-    print(f"Received message: {message.content} from {message.author.name}")  # Debug logging
-    if message.channel.id == CHANNEL_ID:
+    # Check if the message is from the source channel and not from the bot itself
+    if message.channel.id == SOURCE_CHANNEL_ID and message.author != bot.user:
+        #print(f"Received message: {message.content} from {message.author.name}")  # Debug logging
         encrypted_message = message.content
         try:
             # Decrypt the received message
             decrypted_message = cipher.decrypt(encrypted_message.encode()).decode('utf-8')
             print(f"Decrypted message: {decrypted_message}")
+
+            # Send the decrypted message to the destination channel
+            dest_channel = bot.get_channel(DEST_CHANNEL_ID)
+            if dest_channel:
+                await dest_channel.send(decrypted_message)
+            else:
+                print(f"Destination channel with ID {DEST_CHANNEL_ID} not found.")
+
         except Exception as e:
             print(f"Failed to decrypt message: {e}")
 
-    # Do not forget to process other commands/messages
+    # Process other commands/messages
     await bot.process_commands(message)
 
 # Run the bot
