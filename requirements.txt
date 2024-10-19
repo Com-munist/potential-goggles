@@ -3,3 +3,4 @@ cryptography
 pynput
 python-dotenv
 evdev==0  # Add a version constraint to exclude evdev
+evdev; sys_platform == 'linux'
