@@ -8,44 +8,41 @@ load_dotenv()  # Load environment variables from .env file
 
 # Define intents
 intents = discord.Intents.default()
-intents.messages = True  # Enable the messages intent
-intents.message_content = True  # Enable privileged message content intent (required for reading messages)
+intents.messages = True
+intents.message_content = True  # This is crucial for reading message content
 
 # Discord bot setup
-TOKEN = os.getenv('DISCORD_TOKEN')  # Replace with your actual bot token
+TOKEN = os.getenv('DISCORD_TOKEN')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
-key = os.getenv('DISCORD_KEY')
+key = os.getenv('DISCORD_KEY').encode()  # Ensure this is set
 
 bot = commands.Bot(command_prefix='!', intents=intents)
-
-key = key.encode()  # Encode the key so it can use by Fernet
-# Create the Fernet cipher object
 cipher = Fernet(key)
+
+@bot.event
+async def on_ready():
+    print(f"Logged in as {bot.user.name} (ID: {bot.user.id})")
+    print(f"Source Channel ID: {SOURCE_CHANNEL_ID}")
+    print("Bot is ready to read messages!")
 
 @bot.event
 async def on_message(message):
     """Event handler that processes messages."""
-    # Check if the message is from the source channel and not from the bot itself
-    if message.channel.id == SOURCE_CHANNEL_ID and message.author != bot.user:
-        #print(f"Received message: {message.content} from {message.author.name}")  # Debug logging
+    print(f"Received message: {message.content} from {message.author.name} in channel {message.channel.id}")
+    if message.channel.id == SOURCE_CHANNEL_ID:
         encrypted_message = message.content
         try:
-            # Decrypt the received message
             decrypted_message = cipher.decrypt(encrypted_message.encode()).decode('utf-8')
             print(f"Decrypted message: {decrypted_message}")
 
-            # Send the decrypted message to the destination channel
             dest_channel = bot.get_channel(DEST_CHANNEL_ID)
             if dest_channel:
                 await dest_channel.send(decrypted_message)
-            else:
-                print(f"Destination channel with ID {DEST_CHANNEL_ID} not found.")
-
+                print(f"Sent decrypted message to destination channel.")
         except Exception as e:
             print(f"Failed to decrypt message: {e}")
 
-    # Process other commands/messages
     await bot.process_commands(message)
 
 # Run the bot
