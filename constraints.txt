@@ -1,1 +1,0 @@
-evdev==0.0.0  # Add a version constraint to exclude evdev
