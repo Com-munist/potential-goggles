@@ -13,19 +13,28 @@ intents.message_content = True  # Enable privileged message content intent (requ
 # Discord bot setup
 TOKEN = os.getenv('DISCORD_TOKEN')  # Replace with your actual bot token
 CHANNEL_ID = int(os.getenv('DISCORD_ID'))
+key = os.getenv('DISCORD_KEY')
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+key = key.encode() # Encode the key so it can use by Fernet
+# Create the Fernet cipher object
+cipher = Fernet(key)
+
 @bot.event
-async def on_ready():
-    print(f'Logged in as {bot.user.name}')
-     # Get the channel by ID
-    channel = bot.get_channel(CHANNEL_ID)
-    
-    if channel:
-        await channel.send('Hello, this is my first message in this channel!')
-    else:
-        print(f'Channel with ID {CHANNEL_ID} not found.')
+async def on_message(message):
+    """Event handler that processes messages."""
+    if message.channel.id == CHANNEL_ID and message.author != bot.user:
+        encrypted_message = message.content
+        try:
+            # Decrypt the received message
+            decrypted_message = cipher.decrypt(encrypted_message.encode()).decode('utf-8')
+            print(f"Decrypted message: {decrypted_message}")
+        except Exception as e:
+            print(f"Failed to decrypt message: {e}")
+
+        # Do not forget to process other commands/messages
+        await bot.process_commands(message)
 # Run the bot
 bot.run(TOKEN)
 
