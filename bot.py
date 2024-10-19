@@ -12,7 +12,7 @@ intents.message_content = True  # Enable privileged message content intent (requ
 
 # Discord bot setup
 TOKEN = os.getenv('DISCORD_TOKEN')  # Replace with your actual bot token
-CHANNEL_ID = 1296422821269995572
+CHANNEL_ID = DISCORD_ID
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
