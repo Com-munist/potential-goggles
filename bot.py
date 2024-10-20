@@ -16,9 +16,10 @@ TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
 key = os.getenv('DISCORD_KEY').encode()  # Ensure this is set
+cipher = Fernet(key)
 
 bot = commands.Bot(command_prefix='!', intents=intents)
-cipher = Fernet(key)
+
 
 @bot.event
 async def on_ready():
@@ -30,7 +31,7 @@ async def on_ready():
 async def on_message(message):
     """Event handler that processes messages."""
     print(f"Received message: {message.content} from {message.author.name} in channel {message.channel.id}")
-    if message.channel.id == SOURCE_CHANNEL_ID:
+    if message.channel.id == SOURCE_CHANNEL_ID and encrypted_message.startswith('gAAAAA'):
         encrypted_message = message.content
         try:
             decrypted_message = cipher.decrypt(encrypted_message.encode()).decode('utf-8')
