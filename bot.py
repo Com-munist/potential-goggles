@@ -12,7 +12,7 @@ intents.messages = True
 intents.message_content = True  # This is crucial for reading message content
 
 # Discord bot setup
-TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
 key = os.getenv('DISCORD_KEY').encode()  # Ensure this is set
