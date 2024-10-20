@@ -31,7 +31,7 @@ async def on_ready():
 async def on_message(message):
     """Event handler that processes messages."""
     print(f"Received message: {message.content} from {message.author.name} in channel {message.channel.id}")
-    if message.channel.id == SOURCE_CHANNEL_ID && encrypted_message.startswith('gAAAAA'):
+    if message.channel.id == SOURCE_CHANNEL_ID:
         encrypted_message = message.content
         try:
             decrypted_message = cipher.decrypt(encrypted_message.encode()).decode('utf-8')
