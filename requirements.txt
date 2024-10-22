@@ -1,3 +1,4 @@
 discord.py
 cryptography==3.4.7 
 python-dotenv
+rsa
