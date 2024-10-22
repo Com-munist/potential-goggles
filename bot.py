@@ -1,4 +1,5 @@
 import discord
+import rsa
 import os
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -15,8 +16,8 @@ intents.message_content = True  # This is crucial for reading message content
 TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
-key = os.getenv('DISCORD_KEY').encode()  # Ensure this is set
-cipher = Fernet(key)
+privateKey = os.getenv('DISCORD_KEY')  # Ensure this is set
+#cipher = Fernet(key)
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
@@ -34,7 +35,7 @@ async def on_message(message):
     if message.channel.id == SOURCE_CHANNEL_ID:
         encrypted_message = message.content
         try:
-            decrypted_message = cipher.decrypt(encrypted_message.encode()).decode('utf-8')
+            decrypted_message = rsa.decrypt(encrypted_message,privateKey).decode('utf-8')
             print(f"Decrypted message: {decrypted_message}")
 
             dest_channel = bot.get_channel(DEST_CHANNEL_ID)
