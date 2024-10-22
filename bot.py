@@ -16,7 +16,10 @@ intents.message_content = True  # This is crucial for reading message content
 TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
-privateKey = os.getenv('DISCORD_KEY')  # Ensure this is set
+privateKey_pem = os.getenv('DISCORD_KEY').encode()  # Ensure this is set
+# Convert the PEM format private key to an RSA key object
+privateKey = rsa.PrivateKey.load_pkcs1(privateKey_pem)
+
 #cipher = Fernet(key)
 
 bot = commands.Bot(command_prefix='!', intents=intents)
