@@ -1,6 +1,7 @@
 import discord
 import rsa
 import os
+import base64
 from discord.ext import commands
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
@@ -16,12 +17,15 @@ intents.message_content = True  # This is crucial for reading message content
 TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
-privateKey_pem = os.getenv('DISCORD_KEY').encode()  # Ensure this is set
+private_key_base64 = os.getenv('DISCORD_KEY').encode()  # Ensure this is set
+
+#base64 convertion
+# Decode the base64 content to get back the PEM format
+privateKey_pem = base64.b64decode(private_key_base64)
+
 # Convert the PEM format private key to an RSA key object
 privateKey = rsa.PrivateKey.load_pkcs1(privateKey_pem)
-
 #cipher = Fernet(key)
-
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 
