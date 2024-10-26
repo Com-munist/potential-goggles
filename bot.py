@@ -42,6 +42,7 @@ async def on_message(message):
     if message.channel.id == SOURCE_CHANNEL_ID:
         encrypted_message = message.content
         try:
+            encrypted_message = base64.b64decode(encrypted_message)
             decrypted_message = rsa.decrypt(encrypted_message,privateKey).decode('utf-8')
             print(f"Decrypted message: {decrypted_message}")
 
