@@ -4,30 +4,41 @@ import os
 import base64
 from discord.ext import commands
 from dotenv import load_dotenv
-from cryptography.fernet import Fernet
 
 load_dotenv()  # Load environment variables from .env file
+    
+with open('private_key.pem', 'rb') as priv_file:
+    privatekey_pem = priv_file.read()
+
+base64_private = base64.b64encode(privatekey_pem).decode()
 
 # Define intents
 intents = discord.Intents.default()
 intents.messages = True
-intents.message_content = True  # This is crucial for reading message content
+intents.message_content = True  # Required for reading message content
 
 # Discord bot setup
 TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
-private_key_base64 = os.getenv('DISCORD_KEY').encode()  # Ensure this is set
+#private_key_base64 = os.getenv('DISCORD_KEY_1')  # Ensure this is set in .env
 
-#base64 convertion
-# Decode the base64 content to get back the PEM format
-privateKey_pem = base64.b64decode(private_key_base64)
+# Decode the base64 content to get the PEM format
+try:
+    privateKey_pem = base64.b64decode(base64_private)
+    print("Private key PEM successfully decoded.")
+except Exception as e:
+    print(f"Error decoding private key PEM: {e}")
 
-# Convert the PEM format private key to an RSA key object
-privateKey = rsa.PrivateKey.load_pkcs1(privateKey_pem)
-#cipher = Fernet(key)
+# Convert PEM format private key to RSA key object
+try:
+    privateKey = rsa.PrivateKey.load_pkcs1(privateKey_pem)
+    print("Private key loaded successfully.")
+except Exception as e:
+    print(f"Error loading private key: {e}")
+
+# Initialize the bot
 bot = commands.Bot(command_prefix='!', intents=intents)
-
 
 @bot.event
 async def on_ready():
@@ -37,23 +48,47 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    """Event handler that processes messages."""
+    print("on_message triggered")  # Check if this prints at all
     print(f"Received message: {message.content} from {message.author.name} in channel {message.channel.id}")
-    if message.channel.id == SOURCE_CHANNEL_ID:
-        encrypted_message = message.content
-        try:
-            encrypted_message = base64.b64decode(encrypted_message)
-            decrypted_message = rsa.decrypt(encrypted_message,privateKey).decode('utf-8')
-            print(f"Decrypted message: {decrypted_message}")
 
+    # Check if message is from the source channel
+    if message.channel.id == SOURCE_CHANNEL_ID:
+        print(f"Raw received message content: {message.content}")
+
+        encrypted_message = message.content.strip()  # Remove any extra spaces
+        try:
+            # Step 1: Decode base64 message
+            try:
+                encrypted_bytes = base64.b64decode(encrypted_message)
+                print("Base64 decoding successful.")
+            except Exception as decode_error:
+                print(f"Failed to decode base64: {decode_error}")
+                return  # Exit if base64 decoding fails
+            
+            # Step 2: RSA decryption
+            try:
+                decrypted_message = rsa.decrypt(encrypted_bytes, privateKey).decode('utf-8')
+                print(f"Decrypted message: {decrypted_message}")
+            except Exception as decrypt_error:
+                print(f"Failed to decrypt message: {decrypt_error}")
+                return  # Exit if decryption fails
+            
+            # Step 3: Send decrypted message to destination channel
             dest_channel = bot.get_channel(DEST_CHANNEL_ID)
             if dest_channel:
                 await dest_channel.send(decrypted_message)
-                print(f"Sent decrypted message to destination channel.")
+                print("Sent decrypted message to destination channel.")
+            else:
+                print("Destination channel not found.")
+                
         except Exception as e:
-            print(f"Failed to decrypt message: {e}")
+            print(f"Unexpected error: {e}")
 
     await bot.process_commands(message)
-
+@bot.command()
+async def test(ctx):
+    await ctx.send("Bot is receiving commands!")
+    
 # Run the bot
 bot.run(TOKEN)
+
