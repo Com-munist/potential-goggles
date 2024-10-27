@@ -16,21 +16,7 @@ intents.message_content = True  # Required for reading message content
 TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
-private_key_base64 = ('''-----BEGIN RSA PRIVATE KEY-----
-MIICUAIBAAJ+AIu36jbCC656iqAjZpR5bb5vla450v3aMcBfRWJXtl1jp5RrPcAa
-tWxfWEAFCU1XVPTjj2ePNWpUuU0VKM9WE/GtQxsXjK6qUK8STLjZUDI7iFaj9lSC
-sDXwHdAuaPVs9H6m3SuT7caEKLdZJEoDx+nzJlHaNmHCkxPWUDIlAgMBAAECfR8M
-AESou/XKjzFkjG/jx8owe39apBL6wGFyCjX/Lav08BEf/3nHtZbeXPrk45tHE77T
-LlOh1AnLx91iogkvf/hE0vVZlQqz6UAu9rfjDaBAWC4K3l/25hnoX/pnqakXsoqX
-D4gM8tCs51b70YOkIo+n+p5E+Q5ijzk7WjmhAkMGqsXsEzW12pXVKug1MdGwYbBz
-K2UOXzf89FG9NkCBrcV3twcNFEARBzaZZt2qMeeQtVlZC6GW67JfrPLgcPFQE7wJ
-AjsU9NpBWghPPJCcMB13O/RS5Uy9wJIdia/SU8Kro50NoqYJApAXoi+y2HBbHNp8
-mE75j0GrknSeRNpEPQJDBabJc96szuTl0fc3M7BxcbS9oEMOvOoWScTJbT0J3WNy
-WpK51WpvDIAy1kKOcHExPEed34+ugIJ3iAbRM1RKGnlAEQI7CFHUvBEkL2DaAEfR
-yt5QdwB1YPesinF5DcUXCdEgrqMdy4Hq9pb63MO0h1eDHefRop3O8nBoP9UR2fkC
-QwTbLIjWTl1u5UQ/1RJUYUXTfnmmvRNyixYuc91VaPyrQ09pqNqTQpvSktWZ4XJw
-UEiwXaqrWAwOuUl6l6E/XFP4nyQ=
------END RSA PRIVATE KEY-----''') # Ensure this is set in .env
+private_key_base64 = ('DISCORD_KEY') # Ensure this is set in .env
 
 # Decode the base64 content to get the PEM format
 '''try:
