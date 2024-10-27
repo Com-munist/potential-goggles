@@ -6,6 +6,11 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
+    
+with open('private_key.pem', 'rb') as priv_file:
+    privatekey_pem = priv_file.read()
+
+#base64_private = base64.b64encode(privatekey_pem).decode()
 
 # Define intents
 intents = discord.Intents.default()
@@ -13,7 +18,10 @@ intents.messages = True
 intents.message_content = True  # Required for reading message content
 
 # Discord bot setup
-Private_key = os.getenv('''-----BEGIN RSA PRIVATE KEY-----
+TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
+SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
+DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
+private_key_base64 = ('''-----BEGIN RSA PRIVATE KEY-----
 MIICUAIBAAJ+AIu36jbCC656iqAjZpR5bb5vla450v3aMcBfRWJXtl1jp5RrPcAa
 tWxfWEAFCU1XVPTjj2ePNWpUuU0VKM9WE/GtQxsXjK6qUK8STLjZUDI7iFaj9lSC
 sDXwHdAuaPVs9H6m3SuT7caEKLdZJEoDx+nzJlHaNmHCkxPWUDIlAgMBAAECfR8M
@@ -27,14 +35,18 @@ WpK51WpvDIAy1kKOcHExPEed34+ugIJ3iAbRM1RKGnlAEQI7CFHUvBEkL2DaAEfR
 yt5QdwB1YPesinF5DcUXCdEgrqMdy4Hq9pb63MO0h1eDHefRop3O8nBoP9UR2fkC
 QwTbLIjWTl1u5UQ/1RJUYUXTfnmmvRNyixYuc91VaPyrQ09pqNqTQpvSktWZ4XJw
 UEiwXaqrWAwOuUl6l6E/XFP4nyQ=
------END RSA PRIVATE KEY-----''')
-TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
-SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
-DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
+-----END RSA PRIVATE KEY-----''') # Ensure this is set in .env
 
+# Decode the base64 content to get the PEM format
+'''try:
+    privateKey_pem = base64.b64decode(private_key_base64)
+    print("Private key PEM successfully decoded.")
+except Exception as e:
+    print(f"Error decoding private key PEM: {e}")
+'''
 # Convert PEM format private key to RSA key object
 try:
-    privateKey = rsa.PrivateKey.load_pkcs1(Private_key)
+    privateKey = rsa.PrivateKey.load_pkcs1(private_key_base64)
     print("Private key loaded successfully.")
 except Exception as e:
     print(f"Error loading private key: {e}")
@@ -93,4 +105,3 @@ async def test(ctx):
     
 # Run the bot
 bot.run(TOKEN)
-
