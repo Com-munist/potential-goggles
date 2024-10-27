@@ -6,11 +6,6 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
-    
-with open('private_key.pem', 'rb') as priv_file:
-    privatekey_pem = priv_file.read()
-
-base64_private = base64.b64encode(privatekey_pem).decode()
 
 # Define intents
 intents = discord.Intents.default()
@@ -18,6 +13,7 @@ intents.messages = True
 intents.message_content = True  # Required for reading message content
 
 # Discord bot setup
+Private_key = os.getenv('DISCORD_KEY')
 TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
@@ -25,7 +21,7 @@ DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
 
 # Decode the base64 content to get the PEM format
 try:
-    privateKey_pem = base64.b64decode(base64_private)
+    privateKey_pem = base64.b64decode(Private_key)
     print("Private key PEM successfully decoded.")
 except Exception as e:
     print(f"Error decoding private key PEM: {e}")
