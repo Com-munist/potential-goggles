@@ -17,18 +17,10 @@ Private_key = os.getenv('DISCORD_KEY')
 TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
-#private_key_base64 = os.getenv('DISCORD_KEY_1')  # Ensure this is set in .env
-
-# Decode the base64 content to get the PEM format
-try:
-    privateKey_pem = base64.b64decode(Private_key)
-    print("Private key PEM successfully decoded.")
-except Exception as e:
-    print(f"Error decoding private key PEM: {e}")
 
 # Convert PEM format private key to RSA key object
 try:
-    privateKey = rsa.PrivateKey.load_pkcs1(privateKey_pem)
+    privateKey = rsa.PrivateKey.load_pkcs1(Private_key)
     print("Private key loaded successfully.")
 except Exception as e:
     print(f"Error loading private key: {e}")
