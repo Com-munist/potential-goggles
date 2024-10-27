@@ -16,7 +16,7 @@ intents.message_content = True  # Required for reading message content
 TOKEN = os.getenv('DISCORD_TOKEN_APPLE')
 SOURCE_CHANNEL_ID = int(os.getenv('SOURCE_CHANNEL_ID'))
 DEST_CHANNEL_ID = int(os.getenv('DEST_CHANNEL_ID'))
-private_key_base64 = int(os.getenv('DISCORD_KEY')) # Ensure this is set in .env
+private_key_base64 = os.getenv('DISCORD_KEY') # Ensure this is set in .env
 
 # Decode the base64 content to get the PEM format
 '''try:
