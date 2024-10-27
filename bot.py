@@ -6,11 +6,6 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
-    
-with open('private_key.pem', 'rb') as priv_file:
-    privatekey_pem = priv_file.read()
-
-#base64_private = base64.b64encode(privatekey_pem).decode()
 
 # Define intents
 intents = discord.Intents.default()
